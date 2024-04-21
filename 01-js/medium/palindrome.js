@@ -4,6 +4,15 @@
 */
 
 function isPalindrome(str) {
+  str = str.toLowerCase();
+  str = str.replace(/[^a-zA-Z0-9]/g,"");
+  //[^...] is a negated character set, meaning it matches anything not in the brackets.
+  // a-zA-Z matches any uppercase or lowercase letter.
+  // 0-9 matches any digit.
+  // g is the global flag, meaning the replacement should occur throughout the entire string.
+  for(let i=0; i<str.length/2; i++){
+    if(str[i] != str[str.length-i-1])return false;
+  }
   return true;
 }
 
