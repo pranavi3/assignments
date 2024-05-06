@@ -45,5 +45,62 @@
   const app = express();
   
   app.use(bodyParser.json());
-  
+  let todos = [];
+  app.get('/todos',(req,res)=>{
+    res.json(todos);
+  });
+  app.get('/todos/:id',(req,res)=>{
+    let todo = todos.find((todo)=>{
+        return todo["id"]==req.params.id;
+    });
+    if(!todo){
+      return res.status(404).send();
+    }
+    else{
+      res.send(todo);
+    }
+  });
+  app.post('/todos',(req,res)=>{
+    const newTodo = {
+      id : Math.floor( Math.random() * 1000000),
+      title : req.body["title"],
+      description : req.body["description"],
+      completed : req.body["completed"]
+    };
+    todos.push(newTodo);
+    let id = newTodo["id"];
+    res.status(201).json({id});
+  });
+  app.put('/todos/:id',(req,res)=>{
+    let todo = todos.findIndex((todo)=>{
+        return todo["id"]==req.params.id;
+    });
+    if(todo == -1){
+      return res.status(404).send();
+    }
+    else{
+      if(req.body.title)
+        todos[todo].title = req.body.title;
+      if(req.body.completed)
+        todos[todo].completed = req.body.completed;
+      if(req.body.description)
+        todos[todo].description = req.body.description;
+      res.status(200).send();
+    }
+  });
+  app.delete('/todos/:id',(req,res)=>{
+    let todo = todos.findIndex((todo)=>{
+        return todo["id"]==req.params.id;
+    });
+    if(todo == 1){
+      return res.status(404).send();
+    }
+    else{
+      todos.splice(todo,1);
+      res.status(200).send();
+    }
+  });
+  app.all('*',(req,res)=>{
+    res.status(404).send();
+  })
   module.exports = app;
